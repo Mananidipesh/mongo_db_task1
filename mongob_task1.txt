@@ -1,0 +1,131 @@
+Mongodb task1 
+
+1) Finding specific id.. 
+db.sales.find({ 
+"_id": ObjectId("66b067e3c18298476c68cce1") });
+
+2) Finding all objects having ship_mode : second class
+db.sales.find({ship_mode : "Second Class"})
+
+3) Finding all dates greater than '2016-01-01'
+db.sales.find( { order_date : { $gt: new Date('2016-01-01') } } )
+
+4) finding dates between 2015-01-01 and 2016-01-01
+db.sales.find( { order_date: { $gt: new Date('2015-01-01'), $lt: new Date('2016-01-01') } } )
+
+5) finding multiple conditions
+db.sales.find({
+  order_date: { $gt: new Date('2016-01-01') },
+  profit: { $gt: 5000 }
+})
+
+6) finding objects that are not equals to some value 
+db.sales.find({quantity : {$ne : 5}})
+
+7) Finding null values..
+ db.sales.find({ discount: { $exists: false } })
+
+8) using like operator...
+db.customer.find({country : /United/})
+
+9 finding lesser than values than values..
+ db.sales.find({sales : {lte : 5000}})
+
+10) Insert operation- 
+db.product.insertmany([
+{
+    id : 1 ,
+    product : "unknown" , 
+    category :"not defined"
+}, 
+{
+    id : 2 ,
+    product : "unknown" , 
+    category :"not defined"
+}])
+
+11) using OR operator- 
+db.sales.find({
+	$or : [
+		{sales : {$gt : 5000}},
+		{order_line: 2}
+	]})
+
+12) update query 
+db.product.update({ id : 2}, 
+   {$set : {category : "update_3" }})
+
+13) single insert
+db.customer.insert({
+	id: 1,
+	name: 'ABCD',
+	mob: 987666,
+	address: '12 abc'
+})
+
+14) counting values 
+db.sales.count({quantity : {$gt : 5}}) 
+
+15) Delete query
+
+db.test.deleteone({id : 1})
+
+
+16) remove query 
+db.test.remove({id : {$gt : 3}})
+
+17) find all
+db.sales.find()
+
+18) findone and update 
+db.test.findOneAndUpdate({ id : 3 } , 
+                         {$set : {id : 5}}
+
+19) replaceone query 
+test.replaceOne({"product" : "unknown"}, 
+                   {"product" : "unknown23"}
+
+20) Distinct 
+sales.distinct("ship_mode")
+
+21) aggregate (match and count)
+db.sales.aggregate([
+  { $match: { ship_mode: "Second Class" } },
+  { $count: "total" }
+])
+
+22) find + count 
+db.sales.find({ship_mode : "Second Class"})
+
+23) datasize
+db.customer.dataSize("profit")
+
+24) Drop
+db.test.drop()
+
+25) Aggression
+[
+    {
+        '$match': {
+            'profit': {
+                '$gt': 5000
+            }
+        }
+    }, {
+        '$project': {
+            'order_line': 1, 
+            'order_date': 1, 
+            'ship_mode': 1, 
+            'profit': 1, 
+            'discount': 1, 
+            'sales': 1
+        }
+    }, {
+        '$group': {
+            '_id': '$ship_mode', 
+            'sum_all': {
+                '$sum': '$profit'
+            }
+        }
+    }
+]
